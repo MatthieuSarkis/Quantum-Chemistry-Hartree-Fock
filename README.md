@@ -1,5 +1,6 @@
 # Hartree-Fock algorithm
 
+This repository contains an implementation of the Hartree-Fock algorithm in python, that I started as a step in my Quantum Chemistry study.
 ## Requirements
 
 * python>=3.6
@@ -14,6 +15,5 @@ python setup.py install
  
 ## License
 [Apache License 2.0](https://github.com/MatthieuSarkis/Quantum-Chemistry-Hartree-Fock/blob/master/LICENSE)
-
 
 ## To do
