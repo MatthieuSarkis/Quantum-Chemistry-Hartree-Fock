@@ -3,9 +3,9 @@
 This repository contains an implementation of the Hartree-Fock algorithm in python, that I started as a step in my Quantum Chemistry study.
 ## Requirements
 
-* python>=3.6
 * numpy
 * jupyter
+* matplotlib
 
 ```shell
 pip install -r requirements.txt
