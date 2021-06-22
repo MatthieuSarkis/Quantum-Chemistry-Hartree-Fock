@@ -1,6 +1,8 @@
 # Hartree-Fock algorithm
 
 This repository contains an implementation of the Hartree-Fock algorithm in python, that I started as a step in my Quantum Chemistry study.
+
+https://www.basissetexchange.org
 ## Requirements
 
 * numpy
