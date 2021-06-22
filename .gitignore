@@ -1,0 +1,8 @@
+.vscode/
+.DS_Store
+.env/
+__pycache__/
+*egg-info/
+build/
+dist/
+job.sh
