@@ -1,6 +1,6 @@
 # Hartree-Fock algorithm
 
-This repository contains an implementation of the Hartree-Fock algorithm in python, that I started as a step in my Quantum Chemistry study.
+This repository contains an implementation of the restricted Hartree-Fock algorithm in python, that I started as a step in my Quantum Chemistry study.
 
 We restrict ourselves in a first step to s orbitals, i.e. l=0 orbital angular momentum quantum number, and will extend to p, d, f, etc. orbitals in a second step.
 
