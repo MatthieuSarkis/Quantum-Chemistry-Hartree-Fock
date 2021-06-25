@@ -4,8 +4,9 @@ This repository contains an implementation of the Hartree-Fock algorithm in pyth
 
 We restrict ourselves in a first step to s orbitals, i.e. l=0 orbital angular momentum quantum number, and will extend to p, d, f, etc. orbitals in a second step.
 
-https://www.basissetexchange.org
-https://www.mathematica-journal.com/?s=Evaluation+of+Gaussian+Molecular+Integrals+I&x=0&y=0
+Relevant links:
+* https://www.basissetexchange.org
+* https://www.mathematica-journal.com/?s=Evaluation+of+Gaussian+Molecular+Integrals+I&x=0&y=0
 ## Requirements
 
 * numpy
@@ -17,7 +18,13 @@ python setup.py install
 ```
  ## Examples 
  
+```shell
+python main.py --xyz_file data/xyz/HeH.xyz --number_electrons 3 \
+```
+
 ## License
 [Apache License 2.0](https://github.com/MatthieuSarkis/Quantum-Chemistry-Hartree-Fock/blob/master/LICENSE)
 
 ## To do
+
+* include higher orbitals
