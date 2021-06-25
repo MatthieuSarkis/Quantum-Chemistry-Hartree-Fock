@@ -14,6 +14,7 @@ import numpy as np
 
 from src.molecule import Molecule
 from src.primitive_gaussian import PrimitiveGaussian
+from src.utilities import frobenius_norm
 
 class HartreeFock():
     
@@ -87,9 +88,11 @@ class HartreeFock():
     def _diagonalize_S(self) -> np.array:
         
         _, U = np.linalg.eig(self.S)
-        s = np.dot(U.T, np.dot(self.S, U))
-        s_minushalf = np.diag(np.diagonal(s)**-0.5)
-        X = np.dot(U, np.dot(s_minushalf, U.T))
+        s = U.T.dot(self.S.dot(U))
+        s_inverse_root = np.diag(1 / np.sqrt(np.diagonal(s)))
+        X = U.dot(s_inverse_root.dot(U.T))
+        X = np.dot(U, np.dot(s_inverse_root, U.T))
+        
         return X
     
     def self_consistent_field(self,
@@ -115,13 +118,13 @@ class HartreeFock():
                         for l in range(M):
                             G[i, j] += self.density_matrix[k, l] * (self.coulomb_exchange[i, j, l, k] - self.coulomb_exchange[i, k, l, j] / 2)
                             
-            Fock = self.H_core + G
+            F = self.H_core + G
 
-            Fock_Sbasis = np.dot(X.T, np.dot(Fock, X))
-            eigenvalues_Fock_Sbasis, C_Sbasis = np.linalg.eig(Fock_Sbasis)
+            F_Sbasis = np.dot(X.T, np.dot(F, X))
+            eigenvalues_F_Sbasis, C_Sbasis = np.linalg.eig(F_Sbasis)
             
-            idx = eigenvalues_Fock_Sbasis.argsort()
-            eigenvalues_Fock_Sbasis = eigenvalues_Fock_Sbasis[idx]
+            idx = eigenvalues_F_Sbasis.argsort()
+            eigenvalues_F_Sbasis = eigenvalues_F_Sbasis[idx]
             C_Sbasis = C_Sbasis[:, idx]
             
             self.C = np.dot(X, C_Sbasis)
@@ -139,10 +142,5 @@ class HartreeFock():
                           P2: np.array) -> float:
         
         N = P1.shape[0]
-        diff = 0
-        for i in range(N):
-            for j in range(N):
-                diff += (1 / N)**2 * (P1[i, j] - P2[i, j])**2
-        
-        return np.sqrt(diff)
+        return frobenius_norm(P1 - P2) / N
             

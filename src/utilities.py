@@ -50,3 +50,14 @@ def boys(x: float) -> float:
         return 1.0
     else:
         return (0.5 * math.sqrt((math.pi / x))) * erf(math.sqrt(x))
+    
+def frobenius_norm(A: np.array) -> float:
+    
+    N = A.shape[0]
+    norm_squared = 0
+    
+    for i in range(N):
+        for j in range(N):
+            norm_squared += A[i, j]**2 
+        
+    return np.sqrt(norm_squared)

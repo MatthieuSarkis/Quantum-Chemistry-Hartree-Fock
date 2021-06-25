@@ -6,3 +6,4 @@ __pycache__/
 build/
 dist/
 job.sh
+playground.ipynb
