@@ -39,17 +39,10 @@ def xyz_to_molecule(file_name: str) -> Molecule:
     return Molecule(atoms_list=atoms_list, coordinates=coordinates)
 
 def euclidean_distance_squared(R1: np.array,
-                        R2: np.array,
-                        ) -> float:
+                               R2: np.array,
+                               ) -> float:
     
     return np.linalg.norm(np.array(R1) - np.array(R2))**2
-
-def boys(x: float) -> float:
-    
-    if x == 0:
-        return 1.0
-    else:
-        return (0.5 * math.sqrt((math.pi / x))) * erf(math.sqrt(x))
     
 def frobenius_norm(A: np.array) -> float:
     
@@ -61,3 +54,10 @@ def frobenius_norm(A: np.array) -> float:
             norm_squared += A[i, j]**2 
         
     return np.sqrt(norm_squared)
+
+def boys(x: float) -> float:
+    
+    if x == 0:
+        return 1.0
+    else:
+        return math.sqrt(math.pi / x) * erf(math.sqrt(x)) / 2
