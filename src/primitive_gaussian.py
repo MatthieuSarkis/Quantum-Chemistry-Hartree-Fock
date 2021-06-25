@@ -79,7 +79,7 @@ class PrimitiveGaussian():
     @staticmethod
     def potential(g1: 'PrimitiveGaussian',
                   g2: 'PrimitiveGaussian',
-                  atom: 'Atom') -> float:
+                  atom: object) -> float:
         
         g = g1 * g2
         R = atom.coordinates
