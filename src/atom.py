@@ -174,10 +174,3 @@ class Molecule():
         self.atoms = [Atom(atom_type=self.atoms_list[i],
                            coordinates=coordinates[i],
                            ) for i in range(self.number_atoms)]
-
-
-if __name__ == "__main__":
-    atom = Atom('H', [0,0,0])
-    g1 = PrimitiveGaussian([1,2,3], 1, 1, None)
-    print(g1 * g1)
-    m = Molecule(['H', 'He'], [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]], 3)

@@ -16,16 +16,31 @@ class HartreeFock():
         for atom in molecule.atoms:
             self.total_number_orbitals += atom.number_atomic_orbitals
             
+        self.S = None
+        self.T = None
+        self.V = None
+        self.coulomb_exchange = None
+        self.H_core = None
+        self.C = None
+        self.density_matrix = None
+
+        self._initialize_matrices()
+        
+        self.hamiltonian_computed = False
+        
+    def _initialize_matrices(self) -> None:
+        
         self.S = np.zeros((self.total_number_orbitals, self.total_number_orbitals))
         self.T = np.zeros((self.total_number_orbitals, self.total_number_orbitals))
         self.V = np.zeros((self.total_number_orbitals, self.total_number_orbitals))
-        self.multi_electron_tensor = np.zeros((self.total_number_orbitals, self.total_number_orbitals, self.total_number_orbitals, self.total_number_orbitals))
+        self.coulomb_exchange = np.zeros((self.total_number_orbitals, self.total_number_orbitals, self.total_number_orbitals, self.total_number_orbitals))
         self.H_core = np.zeros((self.total_number_orbitals, self.total_number_orbitals))
-        
-        self.C = np.zeros((self.total_number_orbitals, int(self.number_electrons / 2)))
+        self.C = np.zeros((self.total_number_orbitals, np.ceil(self.number_electrons / 2)))
         self.density_matrix = np.zeros((self.total_number_orbitals, self.total_number_orbitals))
 
     def compute_Hamiltonian_contributions(self) -> None:
+        
+        self._initialize_matrices()
         
         for idx_a, atom_a in enumerate(self.molecule.atoms):
             for idxo_a, orbital_a in enumerate(atom_a.atomic_orbitals):
@@ -51,9 +66,10 @@ class HartreeFock():
                                                         c = (idx_c + 1) * (idxo_c + 1) - 1
                                                         d = (idx_d + 1) * (idxo_d + 1) - 1
                                                         
-                                                        self.multi_electron_tensor[a, b, c, d] += gaussian_a.weight * gaussian_b.weight * gaussian_c.weight * gaussian_d.weight *  PrimitiveGaussian.multi(gaussian_a, gaussian_b, gaussian_c, gaussian_d)
+                                                        self.coulomb_exchange[a, b, c, d] += gaussian_a.weight * gaussian_b.weight * gaussian_c.weight * gaussian_d.weight *  PrimitiveGaussian.multi(gaussian_a, gaussian_b, gaussian_c, gaussian_d)
                                                         
         self.H_core = self.T + self.V
+        self.hamiltonian_computed = True
         
     def _diagonalize_S(self) -> np.array:
         
@@ -66,7 +82,10 @@ class HartreeFock():
     def self_consistent_field(self,
                               epsilon: float = 10e-4,
                               ) -> None:
-        
+            
+        if not self.hamiltonian_computed:
+            self.compute_Hamiltonian_contributions()
+                
         diff = 1.0
         M = self.total_number_orbitals
         self.density_matrix = np.zeros((M, M))
@@ -74,12 +93,15 @@ class HartreeFock():
         X = self._diagonalize_S()
         
         while diff > epsilon:
+            
             G = np.zeros((M, M))
+            
             for i in range(M):
                 for j in range(M):
-                    for x in range(M):
-                        for y in range(M):
-                            G[i, j] += self.density_matrix[x, y] * (self.multi_electron_tensor[i, j, y, x] - self.multi_electron_tensor[i, x, y, j] / 2)
+                    for k in range(M):
+                        for l in range(M):
+                            G[i, j] += self.density_matrix[k, l] * (self.coulomb_exchange[i, j, l, k] - self.coulomb_exchange[i, k, l, j] / 2)
+                            
             Fock = self.H_core + G
 
             Fock_Sbasis = np.dot(X.T, np.dot(Fock, X))
@@ -93,7 +115,7 @@ class HartreeFock():
             
             for i in range(M):
                 for j in range(M):
-                    for a in range(int(self.number_electrons / 2)):
+                    for a in range(np.ceil(self.number_electrons / 2)):
                         self.density_matrix[i, j] = 2 * self.C[i, a] * self.C[j, a]
             
             diff = self._compare_matrices(density_matrix_old, self.density_matrix)
@@ -110,6 +132,4 @@ class HartreeFock():
                 diff += (1 / N)**2 * (P1[i, j] - P2[i, j])**2
         
         return np.sqrt(diff)
-    
-    
-        
+            
