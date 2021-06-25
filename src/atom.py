@@ -107,8 +107,7 @@ class AtomicOrbital():
                                                             alpha=self.basis_exponents[i],
                                                             weight=self.basis_weights[i],
                                                             normalization=None,
-                                                            ) for i in range(len(self.basis_weights))]
-        
+                                                            ) for i in range(len(self.basis_weights))]    
 class Atom():
     
     zeta = {'H' : [1.24],
@@ -171,10 +170,10 @@ class Molecule():
         
         self.atoms_list = atoms_list
         self.coordinates = coordinates
-        self.number_electrons = number_electrons
+        self.number_atoms = len(self.atoms_list)
         self.atoms = [Atom(atom_type=self.atoms_list[i],
                            coordinates=coordinates[i],
-                           ) for i in range(len(self.atoms_list))]
+                           ) for i in range(self.number_atoms)]
 
 
 if __name__ == "__main__":

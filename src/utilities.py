@@ -3,36 +3,29 @@ import numpy as np
 from scipy.special import erf
 from typing import List
 
-def xyz_reader(file_name):
-    file = open(file_name, 'r')
+from src.atom import Molecule
 
-    number_of_atoms = 0
-    atom_type = []
-    atom_coordinates = []
+def xyz_reader(file_name: str) -> Molecule:
+    
+    atoms_list = []
+    coordinates = []
 
-    for idx, line in enumerate(file):
-        if idx == 0:
-            try:
-                number_of_atoms = int(line.split()[0])
-            except:
-                print("file not in correct format.")
-        
-        if idx == 1:
-            continue
+    with open('file_name', 'r') as file:
+        for idx, line in enumerate(file):
+            
+            if idx == 0 or idx == 1:
+                continue
 
-        if idx != 0:
             split = line.split()
-            atom = split[0]
+            atom_type = split[0]
             coordinates = [float(split[1]),
                            float(split[2]),
                            float(split[3])]
-            atom_type.append(atom)
-            atom_coordinates.append(coordinates)
+            
+            atoms_list.append(atom_type)
+            coordinates.append(coordinates)
 
-    file.close()
-
-    return number_of_atoms, atom_type, atom_coordinates
-
+    return Molecule(atoms_list=atoms_list, coordinates=coordinates)
 
 def euclidean_distance2(R1: np.array,
                         R2: np.array,
