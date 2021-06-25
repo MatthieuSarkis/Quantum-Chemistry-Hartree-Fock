@@ -19,7 +19,7 @@ python setup.py install
  ## Examples 
  
 ```shell
-python main.py --xyz_file data/xyz/HeH.xyz --number_electrons 3 \
+python main.py --xyz_file data/xyz/HeH.xyz --number_electrons 3
 ```
 
 ## License
