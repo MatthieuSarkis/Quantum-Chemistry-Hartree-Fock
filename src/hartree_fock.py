@@ -12,6 +12,7 @@
 
 import numpy as np
 
+from src.atom import Atom
 from src.molecule import Molecule
 from src.primitive_gaussian import PrimitiveGaussian
 from src.utilities import frobenius_norm
@@ -59,9 +60,11 @@ class HartreeFock():
         for idx_a, atom_a in enumerate(self.molecule.atoms):
             for idxo_a, orbital_a in enumerate(atom_a.atomic_orbitals):
                 for gaussian_a in orbital_a.basis_primitive_gaussians:
+                    gaussian_a.alpha *= Atom.zeta[atom_a.atom_type]**2
                     for idx_b, atom_b in enumerate(self.molecule.atoms):
                         for idxo_b, orbital_b in enumerate(atom_b.atomic_orbitals):
                             for gaussian_b in orbital_b.basis_primitive_gaussians:
+                                gaussian_b.alpha *= Atom.zeta[atom_b.atom_type]**2
                                 a = (idx_a + 1) * (idxo_a + 1) - 1
                                 b = (idx_b + 1) * (idxo_b + 1) - 1
         
@@ -74,9 +77,11 @@ class HartreeFock():
                                 for idx_c, atom_c in enumerate(self.molecule.atoms):
                                     for idxo_c, orbital_c in enumerate(atom_c.atomic_orbitals):
                                         for gaussian_c in orbital_c.basis_primitive_gaussians:
+                                            gaussian_c.alpha *= Atom.zeta[atom_c.atom_type]**2
                                             for idx_d, atom_d in enumerate(self.molecule.atoms):
                                                 for idxo_d, orbital_d in enumerate(atom_d.atomic_orbitals):
                                                     for gaussian_d in orbital_d.basis_primitive_gaussians:
+                                                        gaussian_d.alpha *= Atom.zeta[atom_d.atom_type]**2
                                                         c = (idx_c + 1) * (idxo_c + 1) - 1
                                                         d = (idx_d + 1) * (idxo_d + 1) - 1
                                                         
