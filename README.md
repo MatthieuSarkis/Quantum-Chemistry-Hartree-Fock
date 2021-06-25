@@ -28,3 +28,4 @@ python main.py --xyz_file data/xyz/HeH.xyz --number_electrons 3
 ## To do
 
 * include higher orbitals
+* more comments

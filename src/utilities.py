@@ -1,16 +1,27 @@
+# -*- coding: utf-8 -*-
+#
+# Written by Matthieu Sarkis, https://github.com/MatthieuSarkis
+#
+# This code is licensed under the Apache License, Version 2.0. You may
+# obtain a copy of this license in the LICENSE.txt file in the root directory
+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# Any modifications or derivative works of this code must retain this
+# copyright notice, and modified files need to carry a notice indicating
+# that they have been altered from the originals.
+
 import math
 import numpy as np
 from scipy.special import erf
-from typing import List
 
 from src.atom import Molecule
 
-def xyz_reader(file_name: str) -> Molecule:
+def xyz_to_molecule(file_name: str) -> Molecule:
     
     atoms_list = []
     coordinates = []
 
-    with open('file_name', 'r') as file:
+    with open(file_name, 'r') as file:
         for idx, line in enumerate(file):
             
             if idx == 0 or idx == 1:
