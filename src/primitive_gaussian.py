@@ -13,7 +13,6 @@
 import math
 import numpy as np
 from typing import List
-
 from src.utilities import boys, euclidean_distance_squared 
 
 class PrimitiveGaussian():

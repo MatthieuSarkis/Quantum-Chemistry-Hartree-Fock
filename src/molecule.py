@@ -11,7 +11,6 @@
 # that they have been altered from the originals.
 
 from typing import List
-
 from src.atom import Atom
 
 class Molecule():

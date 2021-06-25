@@ -13,15 +13,14 @@
 import math
 import numpy as np
 from scipy.special import erf
-
 from src.atom import Molecule
 
-def xyz_to_molecule(file_name: str) -> Molecule:
+def xyz_to_molecule(file_path: str) -> Molecule:
     
     atoms_list = []
     coordinates = []
 
-    with open(file_name, 'r') as file:
+    with open(file_path, 'r') as file:
         for idx, line in enumerate(file):
             
             if idx == 0 or idx == 1:

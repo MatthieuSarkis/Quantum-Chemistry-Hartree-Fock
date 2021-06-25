@@ -11,7 +11,6 @@
 # that they have been altered from the originals.
 
 import numpy as np
-
 from src.atom import Atom
 from src.molecule import Molecule
 from src.primitive_gaussian import PrimitiveGaussian

@@ -11,21 +11,12 @@
 # that they have been altered from the originals.
 
 from typing import List
-
 from src.atomic_orbital import AtomicOrbital    
 class Atom():
     
-    zeta = {'H' : [1.24],
-            'He': [2.0925],
-            'Li': [2.69, 0.80]}
-
-    maximal_orbital_quantum_number = {'H' : 1,
-                                      'He': 1,
-                                      'Li': 2}
-    
-    charge = {'H' : 1,
-              'He': 2,
-              'Li': 3}
+    zeta = {'H' : [1.24], 'He': [2.0925], 'Li': [2.69, 0.80]}
+    maximal_orbital_quantum_number = {'H' : 1, 'He': 1, 'Li': 2}
+    charge = {'H' : 1, 'He': 2, 'Li': 3}
     
     ### STOnG ###
     basis_weights = {'H' :[[0.444635, 0.535328, 0.154329], [0.700115, 0.399513, -0.0999672]]}

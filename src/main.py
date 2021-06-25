@@ -11,7 +11,6 @@
 # that they have been altered from the originals.
 
 from argparse import ArgumentParser
-
 from src.hartree_fock import HartreeFock
 from src.utilities import xyz_to_molecule
 
