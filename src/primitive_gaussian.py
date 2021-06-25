@@ -24,12 +24,12 @@ class PrimitiveGaussian():
                  center: List[float],
                  alpha: float,
                  weight: float,
-                 normalization: None,
+                 normalization: float = None,
                  ) -> None:
         
         self.center = np.array(center)
-        self.alpha = alpha # related to the standard deviation
-        self.weight = weight # weight in the linear combination with other primitive gaussians to form an atomic orbital.
+        self.alpha = alpha
+        self.weight = weight
         
         if normalization is None:
             self.normalization = (2.0 * self.alpha / np.pi)**0.75 
