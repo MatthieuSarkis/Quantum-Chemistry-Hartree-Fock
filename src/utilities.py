@@ -34,9 +34,9 @@ def xyz_reader(file_name):
     return number_of_atoms, atom_type, atom_coordinates
 
 
-def euclidean_distance2(R1: List[float],
-                       R2: List[float],
-                       ) -> float:
+def euclidean_distance2(R1: np.array,
+                        R2: np.array,
+                        ) -> float:
     
     return np.linalg.norm(np.array(R1) - np.array(R2))**2
 

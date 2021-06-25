@@ -16,7 +16,7 @@ class PrimitiveGaussian():
                  normalization: None,
                  ) -> None:
         
-        self.center = center
+        self.center = np.array(center)
         self.alpha = alpha # related to the standard deviation
         self.weight = weight # weight in the linear combination with other primitive gaussians to form an atomic orbital.
         
@@ -91,36 +91,94 @@ class PrimitiveGaussian():
 class AtomicOrbital():
     
     def __init__(self,
-                 basis_weights: List[float]) -> None:
+                 basis_weights: List[float],
+                 basis_exponents: List[float],
+                 center: List[float],
+                 zeta_weight: float,
+                 ) -> None:
         
+        assert len(basis_weights) == len(basis_exponents)
         self.basis_weights = basis_weights
+        self.basis_exponents = basis_exponents
+        self.center = center
+        self.zeta_weight = zeta_weight 
         
-        self.basis_functions = []
+        self.basis_primitive_gaussians = [PrimitiveGaussian(center=self.center,
+                                                            alpha=self.basis_exponents[i],
+                                                            weight=self.basis_weights[i],
+                                                            normalization=None,
+                                                            ) for i in range(len(self.basis_weights))]
         
 class Atom():
     
+    zeta = {'H' : [1.24],
+            'He': [2.0925],
+            'Li': [2.69, 0.80],
+            'Be': [3.68, 1.15],
+            'B' : [4.68, 1.50],
+            'C' : [5.67, 1.72]}
+
+    max_quantum_number = {'H' : 1,
+                          'He': 1,
+                          'Li': 2,
+                          'Be': 2,
+                          'C' : 2}
+    
+    charge = {'H' : 1,
+              'He': 2,
+              'Li': 3,
+              'Be': 4,
+              'B' : 5,
+              'C' : 6,
+              'N' : 7,
+              'O' : 8,
+              'F' : 9,
+              'Ne': 10}
+    
+    ### STOnG ###
+    basis_weights = {'H' :[[0.444635, 0.535328, 0.154329], [0.700115, 0.399513, -0.0999672]]}
+    basis_exponents = {'H' : [[0.109818, 0.405771, 2.22766], [0.0751386, 0.231031, 0.994203]]}
+    #############
+    
     def __init__(self,
                  atom_type: str,
-                 coordinates: List[float],
-                 zeta_scaling: List[float],
-                 number_atomic_orbitals: int) -> None:
+                 coordinates: List[float] = [0.0, 0.0, 0.0],
+                 ) -> None:
         
         self.atom_type = atom_type
+        self.charge = Atom.charge[self.atom_type]
+        self.zeta_scaling = Atom.zeta[self.atom_type]
         self.coordinates = coordinates
-        self.zeta_scaling = zeta_scaling
-        self.number_atomic_orbitals = number_atomic_orbitals
-        self.atomic_orbitals = []
+        self.number_atomic_orbitals = len(self.zeta_scaling)
         
-        self._initialize_atomic_orbitals()
+        self.basis_weights = Atom.basis_weights[atom_type]
+        self.basis_exponents = Atom.basis_exponents[atom_type]
+        
+        self.atomic_orbitals = [AtomicOrbital(basis_weights=self.basis_weights[i],
+                                              basis_exponents=self.basis_exponents[i],
+                                              center=self.coordinates,
+                                              zeta_weight=self.zeta_scaling[i],
+                                              ) for i in range(self.number_atomic_orbitals)]
+        
 
-    def _initialize_atomic_orbitals(self) -> None:
-        pass
-
-
+class Molecule():
+    
+    def __init__(self,
+                 atoms_list: List[str],
+                 coordinates: List[List[float]],
+                 number_electrons: int,
+                 ) -> None:
+        
+        self.atoms_list = atoms_list
+        self.coordinates = coordinates
+        self.number_electrons = number_electrons
+        self.atoms = [Atom(atom_type=self.atoms_list[i],
+                           coordinates=coordinates[i],
+                           ) for i in range(len(self.atoms_list))]
 
 
 if __name__ == "__main__":
-    atom = Atom('H', [0,0,0], [1,2], 2)
-    orbital = AtomicOrbital([[1,2],[3,4]])
-    g1 = PrimitiveGaussian([1,2,3], 1, 1)
-    
+    atom = Atom('H', [0,0,0])
+    g1 = PrimitiveGaussian([1,2,3], 1, 1, None)
+    print(g1 * g1)
+    m = Molecule(['H', 'He'], [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0]], 3)
