@@ -24,11 +24,12 @@ class PrimitiveGaussian():
                  center: List[float],
                  alpha: float,
                  weight: float,
+                 zeta_weight: float = 1.0,
                  normalization: float = None,
                  ) -> None:
         
         self.center = np.array(center)
-        self.alpha = alpha
+        self.alpha = alpha * zeta_weight**2
         self.weight = weight
         
         if normalization is None:
@@ -47,7 +48,7 @@ class PrimitiveGaussian():
         alpha = self.alpha + g.alpha
         diff = euclidean_distance_squared(self.center, g.center)
         N = self.normalization * g.normalization
-        normalization = N * np.exp(-self.alpha * g.alpha / alpha * diff)
+        normalization = N * np.exp(-(self.alpha * g.alpha / alpha) * diff)
         weight = self.weight * g.weight
         center = (self.alpha * self.center + g.alpha * g.center) / alpha
         
@@ -61,7 +62,7 @@ class PrimitiveGaussian():
                 g2: 'PrimitiveGaussian') -> float:
         
         g = g1 * g2
-        prefactor = (np.pi / g.alpha)**1.5
+        prefactor = (np.pi / g.alpha)**(3/2)
         
         return prefactor * g.normalization
     
@@ -80,7 +81,6 @@ class PrimitiveGaussian():
                   g2: 'PrimitiveGaussian',
                   atom: 'Atom') -> float:
         
-        assert isinstance(atom, Atom)
         g = g1 * g2
         R = atom.coordinates
         Z = atom.charge

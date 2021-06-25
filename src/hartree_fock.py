@@ -11,7 +11,7 @@
 # that they have been altered from the originals.
 
 import numpy as np
-from src.atom import Atom
+from src.info import *
 from src.molecule import Molecule
 from src.primitive_gaussian import PrimitiveGaussian
 from src.utilities import frobenius_norm
@@ -49,7 +49,7 @@ class HartreeFock():
         self.V = np.zeros((self.total_number_orbitals, self.total_number_orbitals))
         self.coulomb_exchange = np.zeros((self.total_number_orbitals, self.total_number_orbitals, self.total_number_orbitals, self.total_number_orbitals))
         self.H_core = np.zeros((self.total_number_orbitals, self.total_number_orbitals))
-        self.C = np.zeros((self.total_number_orbitals, np.ceil(self.number_electrons / 2)))
+        self.C = np.zeros((self.total_number_orbitals, int(self.number_electrons / 2)))
         self.density_matrix = np.zeros((self.total_number_orbitals, self.total_number_orbitals))
 
     def compute_Hamiltonian_contributions(self) -> None:
@@ -59,15 +59,13 @@ class HartreeFock():
         for idx_a, atom_a in enumerate(self.molecule.atoms):
             for idxo_a, orbital_a in enumerate(atom_a.atomic_orbitals):
                 for gaussian_a in orbital_a.basis_primitive_gaussians:
-                    gaussian_a.alpha *= Atom.zeta[atom_a.atom_type]**2
                     for idx_b, atom_b in enumerate(self.molecule.atoms):
                         for idxo_b, orbital_b in enumerate(atom_b.atomic_orbitals):
                             for gaussian_b in orbital_b.basis_primitive_gaussians:
-                                gaussian_b.alpha *= Atom.zeta[atom_b.atom_type]**2
                                 a = (idx_a + 1) * (idxo_a + 1) - 1
                                 b = (idx_b + 1) * (idxo_b + 1) - 1
         
-                                self.S[a, b] += gaussian_a.weight * gaussian_b.weight * PrimitiveGaussian.overlap(gaussian_a, gaussian_b)
+                                self.S[a, b] += gaussian_a.weight * gaussian_b.weight * PrimitiveGaussian.overlap(gaussian_a, gaussian_b)                                
                                 self.T[a, b] += gaussian_a.weight * gaussian_b.weight * PrimitiveGaussian.kinetic(gaussian_a, gaussian_b)
                                 
                                 for atom in self.molecule.atoms:
@@ -76,11 +74,9 @@ class HartreeFock():
                                 for idx_c, atom_c in enumerate(self.molecule.atoms):
                                     for idxo_c, orbital_c in enumerate(atom_c.atomic_orbitals):
                                         for gaussian_c in orbital_c.basis_primitive_gaussians:
-                                            gaussian_c.alpha *= Atom.zeta[atom_c.atom_type]**2
                                             for idx_d, atom_d in enumerate(self.molecule.atoms):
                                                 for idxo_d, orbital_d in enumerate(atom_d.atomic_orbitals):
                                                     for gaussian_d in orbital_d.basis_primitive_gaussians:
-                                                        gaussian_d.alpha *= Atom.zeta[atom_d.atom_type]**2
                                                         c = (idx_c + 1) * (idxo_c + 1) - 1
                                                         d = (idx_d + 1) * (idxo_d + 1) - 1
                                                         
@@ -123,7 +119,6 @@ class HartreeFock():
                             G[i, j] += self.density_matrix[k, l] * (self.coulomb_exchange[i, j, l, k] - self.coulomb_exchange[i, k, l, j] / 2)
                             
             F = self.H_core + G
-
             F_Sbasis = np.dot(X.T, np.dot(F, X))
             eigenvalues_F_Sbasis, C_Sbasis = np.linalg.eig(F_Sbasis)
             
@@ -135,7 +130,7 @@ class HartreeFock():
             
             for i in range(M):
                 for j in range(M):
-                    for a in range(np.ceil(self.number_electrons / 2)):
+                    for a in range(np.int(self.number_electrons / 2)):
                         self.density_matrix[i, j] = 2 * self.C[i, a] * self.C[j, a]
             
             diff = self._compare_matrices(density_matrix_old, self.density_matrix)
@@ -148,3 +143,16 @@ class HartreeFock():
         N = P1.shape[0]
         return frobenius_norm(P1 - P2) / N
             
+    def print_matrices(self) -> None:
+        
+        print("\n")
+        print("The system studied is composed of {}, and {} electrons. The basis of primitive Gaussians is {}.\n".format(self.molecule.atoms_list, self.number_electrons, self.molecule.basis))
+        print("The overlap matrix is:\n")
+        print(self.S, "\n")
+        print("The kinetic matrix is:\n")
+        print(self.T, "\n")
+        print("The potential matrix is:\n")
+        print(self.V, "\n")
+        print("The density matrix is:\n")
+        print(self.density_matrix, "\n")
+        

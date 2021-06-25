@@ -25,7 +25,7 @@ class Atom():
         self.charge = charge[self.atom_type]
         self.zeta_scaling = zeta[self.atom_type]
         self.coordinates = coordinates
-        self.number_atomic_orbitals = len(self.zeta_scaling)
+        self.number_atomic_orbitals = maximun_number_orbitals[self.atom_type]
         
         if basis == 'STOnG':
             self.basis_weights = weights_STOnG[atom_type]

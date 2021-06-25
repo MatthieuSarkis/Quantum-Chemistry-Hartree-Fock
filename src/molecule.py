@@ -18,12 +18,14 @@ class Molecule():
     def __init__(self,
                  atoms_list: List[str],
                  coordinates: List[List[float]],
-                 number_electrons: int,
+                 basis: str = 'STO-3G',
                  ) -> None:
         
         self.atoms_list = atoms_list
         self.coordinates = coordinates
         self.number_atoms = len(self.atoms_list)
+        self.basis = basis
         self.atoms = [Atom(atom_type=self.atoms_list[i],
                            coordinates=coordinates[i],
+                           basis=self.basis,
                            ) for i in range(self.number_atoms)]

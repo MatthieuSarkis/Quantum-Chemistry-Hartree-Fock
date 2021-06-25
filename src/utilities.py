@@ -13,9 +13,9 @@
 import math
 import numpy as np
 from scipy.special import erf
-from src.atom import Molecule
+from typing import List, Tuple
 
-def xyz_to_molecule(file_path: str) -> Molecule:
+def xyz_to_molecule(file_path: str) -> Tuple[List[str], List[List[float]]]:
     
     atoms_list = []
     coordinates = []
@@ -35,7 +35,7 @@ def xyz_to_molecule(file_path: str) -> Molecule:
             atoms_list.append(atom_type)
             coordinates.append(coordinates)
 
-    return Molecule(atoms_list=atoms_list, coordinates=coordinates)
+    return atoms_list, coordinates
 
 def euclidean_distance_squared(R1: np.array,
                                R2: np.array,

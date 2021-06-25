@@ -6,9 +6,9 @@ zeta = {'H' : [1.24],
         'He': [2.0925], 
         'Li': [2.69, 0.80]}
 
-maximal_orbital_quantum_number = {'H' : 1, 
-                                  'He': 1, 
-                                  'Li': 2}
+maximun_number_orbitals = {'H' : 1, 
+                           'He': 1, 
+                           'Li': 2}
 
 ### STOnG basis ###
 weights_STOnG = {'H' : [[0.444635, 0.535328, 0.154329], [0.700115, 0.399513, -0.0999672]]}

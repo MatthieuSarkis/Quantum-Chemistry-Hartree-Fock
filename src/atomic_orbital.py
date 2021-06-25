@@ -31,5 +31,6 @@ class AtomicOrbital():
         self.basis_primitive_gaussians = [PrimitiveGaussian(center=self.center,
                                                             alpha=self.basis_exponents[i],
                                                             weight=self.basis_weights[i],
+                                                            zeta_weight=zeta_weight,
                                                             normalization=None,
                                                             ) for i in range(len(self.basis_weights))]
