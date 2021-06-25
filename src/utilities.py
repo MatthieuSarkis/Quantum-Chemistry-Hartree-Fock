@@ -38,7 +38,7 @@ def xyz_to_molecule(file_name: str) -> Molecule:
 
     return Molecule(atoms_list=atoms_list, coordinates=coordinates)
 
-def euclidean_distance2(R1: np.array,
+def euclidean_distance_squared(R1: np.array,
                         R2: np.array,
                         ) -> float:
     

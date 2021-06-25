@@ -12,7 +12,8 @@
 
 import numpy as np
 
-from src.atom import PrimitiveGaussian, Molecule
+from src.molecule import Molecule
+from src.primitive_gaussian import PrimitiveGaussian
 
 class HartreeFock():
     

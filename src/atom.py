@@ -10,116 +10,9 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-import math
-import numpy as np
 from typing import List
 
-from src.utilities import boys, euclidean_distance2 
-
-class PrimitiveGaussian():
-    """
-    weight * normalization * \exp(- \alpha |r - center|^2)
-    """
-    
-    def __init__(self,
-                 center: List[float],
-                 alpha: float,
-                 weight: float,
-                 normalization: None,
-                 ) -> None:
-        
-        self.center = np.array(center)
-        self.alpha = alpha # related to the standard deviation
-        self.weight = weight # weight in the linear combination with other primitive gaussians to form an atomic orbital.
-        
-        if normalization is None:
-            self.normalization = (2.0 * self.alpha / np.pi)**0.75 
-        else:
-            self.normalization = normalization
-        
-    def __mul__(self, 
-                g: 'PrimitiveGaussian') -> 'PrimitiveGaussian':
-        """Overload of the multiplication operator.
-        
-        The total normalizing factor comes from the normalizing factor of 
-        both primitive gaussians, and from completing the square.
-        """
-        
-        alpha = self.alpha + g.alpha
-        diff = euclidean_distance2(self.center, g.center)
-        N = self.normalization * g.normalization
-        normalization = N * np.exp(-self.alpha * g.alpha / alpha * diff)
-        weight = self.weight * g.weight
-        center = (self.alpha * self.center + g.alpha * g.center) / alpha
-        
-        return PrimitiveGaussian(center=center,
-                                 alpha=alpha,
-                                 weight=weight,
-                                 normalization=normalization)
-        
-    @staticmethod
-    def overlap(g1: 'PrimitiveGaussian',
-                g2: 'PrimitiveGaussian') -> float:
-        
-        g = g1 * g2
-        prefactor = (np.pi / g.alpha)**1.5
-        
-        return prefactor * g.normalization
-    
-    @staticmethod
-    def kinetic(g1: 'PrimitiveGaussian',
-                g2: 'PrimitiveGaussian') -> float:
-        
-        g = g1 * g2
-        prefactor = (np.pi / g.alpha)**1.5
-        reduced_exponent = g1.alpha * g2.alpha / g.alpha
-
-        return g.normalization * prefactor * reduced_exponent * (3 - 2 * reduced_exponent * euclidean_distance2(g1.center, g2.center))
-    
-    @staticmethod
-    def potential(g1: 'PrimitiveGaussian',
-                  g2: 'PrimitiveGaussian',
-                  atom: 'Atom') -> float:
-        
-        assert isinstance(atom, Atom)
-        g = g1 * g2
-        R = atom.coordinates
-        Z = atom.charge
-    
-        return (-2 * math.pi * Z / g.alpha) * g.normalization * boys(g.alpha * euclidean_distance2(g.center, R))
-    
-    @staticmethod
-    def multi(g1: 'PrimitiveGaussian',
-              g2: 'PrimitiveGaussian',
-              g3: 'PrimitiveGaussian',
-              g4: 'PrimitiveGaussian',
-              ) -> float:
-        
-        ga = g1 * g2
-        gb = g3 * g4
-        prefactor = 2 * math.pi**2.5 / (ga.alpha * gb.alpha * math.sqrt(ga.alpha + gb.alpha))
-    
-        return prefactor * ga.normalization * gb.normalization * boys(ga.alpha * gb.alpha / (ga.alpha + gb.alpha) * euclidean_distance2(ga.center, gb.center))
-class AtomicOrbital():
-    
-    def __init__(self,
-                 basis_weights: List[float],
-                 basis_exponents: List[float],
-                 center: List[float],
-                 zeta_weight: float,
-                 ) -> None:
-        
-        assert len(basis_weights) == len(basis_exponents)
-        self.basis_weights = basis_weights
-        self.basis_exponents = basis_exponents
-        self.center = center
-        self.zeta_weight = zeta_weight 
-        
-        self.basis_primitive_gaussians = [PrimitiveGaussian(center=self.center,
-                                                            alpha=self.basis_exponents[i],
-                                                            weight=self.basis_weights[i],
-                                                            normalization=None,
-                                                            ) for i in range(len(self.basis_weights))]    
+from src.atomic_orbital import AtomicOrbital    
 class Atom():
     
     zeta = {'H' : [1.24],
@@ -171,18 +64,3 @@ class Atom():
                                               zeta_weight=self.zeta_scaling[i],
                                               ) for i in range(self.number_atomic_orbitals)]
         
-
-class Molecule():
-    
-    def __init__(self,
-                 atoms_list: List[str],
-                 coordinates: List[List[float]],
-                 number_electrons: int,
-                 ) -> None:
-        
-        self.atoms_list = atoms_list
-        self.coordinates = coordinates
-        self.number_atoms = len(self.atoms_list)
-        self.atoms = [Atom(atom_type=self.atoms_list[i],
-                           coordinates=coordinates[i],
-                           ) for i in range(self.number_atoms)]
