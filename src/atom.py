@@ -1,5 +1,8 @@
+import math
 import numpy as np
 from typing import List
+
+from src.utilities import boys, euclidean_distance2 
 
 class PrimitiveGaussian():
     """
@@ -13,7 +16,7 @@ class PrimitiveGaussian():
                  normalization: None,
                  ) -> None:
         
-        self.center = np.array(center) 
+        self.center = center
         self.alpha = alpha # related to the standard deviation
         self.weight = weight # weight in the linear combination with other primitive gaussians to form an atomic orbital.
         
@@ -31,7 +34,7 @@ class PrimitiveGaussian():
         """
         
         alpha = self.alpha + g.alpha
-        diff = np.linalg.norm(self.center - g.center)**2
+        diff = euclidean_distance2(self.center, g.center)
         N = self.normalization * g.normalization
         normalization = N * np.exp(-self.alpha * g.alpha / alpha * diff)
         weight = self.weight * g.weight
@@ -59,9 +62,32 @@ class PrimitiveGaussian():
         prefactor = (np.pi / g.alpha)**1.5
         reduced_exponent = g1.alpha * g2.alpha / g.alpha
 
-        return g.normalization * prefactor * reduced_exponent * (3 - 2 * reduced_exponent * np.linalg.norm(g1.center - g2.center)**2)
+        return g.normalization * prefactor * reduced_exponent * (3 - 2 * reduced_exponent * euclidean_distance2(g1.center, g2.center))
     
+    @staticmethod
+    def potential(g1: 'PrimitiveGaussian',
+                  g2: 'PrimitiveGaussian',
+                  atom: 'Atom') -> float:
+        
+        assert isinstance(atom, Atom)
+        g = g1 * g2
+        R = atom.coordinates
+        Z = atom.charge
     
+        return (-2 * math.pi * Z / g.alpha) * g.normalization * boys(g.alpha * euclidean_distance2(g.center, R))
+    
+    @staticmethod
+    def multi(g1: 'PrimitiveGaussian',
+              g2: 'PrimitiveGaussian',
+              g3: 'PrimitiveGaussian',
+              g4: 'PrimitiveGaussian',
+              ) -> float:
+        
+        ga = g1 * g2
+        gb = g3 * g4
+        prefactor = 2 * math.pi**2.5 / (ga.alpha * gb.alpha * math.sqrt(ga.alpha + gb.alpha))
+    
+        return prefactor * ga.normalization * gb.normalization * boys(ga.alpha * gb.alpha / (ga.alpha + gb.alpha) * euclidean_distance2(ga.center, gb.center))
 class AtomicOrbital():
     
     def __init__(self,
