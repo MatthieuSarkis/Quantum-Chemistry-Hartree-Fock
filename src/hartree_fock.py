@@ -96,7 +96,7 @@ class HartreeFock():
         return X
     
     def self_consistent_field(self,
-                              epsilon: float = 10e-4,
+                              epsilon: float = 10e-5,
                               ) -> None:
             
         if not self.hamiltonian_computed:
@@ -122,9 +122,9 @@ class HartreeFock():
             F_Sbasis = np.dot(X.T, np.dot(F, X))
             eigenvalues_F_Sbasis, C_Sbasis = np.linalg.eig(F_Sbasis)
             
-            idx = eigenvalues_F_Sbasis.argsort()
-            eigenvalues_F_Sbasis = eigenvalues_F_Sbasis[idx]
-            C_Sbasis = C_Sbasis[:, idx]
+            ordered_idx = eigenvalues_F_Sbasis.argsort()
+            eigenvalues_F_Sbasis = eigenvalues_F_Sbasis[ordered_idx]
+            C_Sbasis = C_Sbasis[:, ordered_idx]
             
             self.C = np.dot(X, C_Sbasis)
             
@@ -147,12 +147,14 @@ class HartreeFock():
         
         print("\n")
         print("The system studied is composed of {}, and {} electrons. The basis of primitive Gaussians is {}.\n".format(self.molecule.atoms_list, self.number_electrons, self.molecule.basis))
-        print("The overlap matrix is:\n")
+        print("The overlap matrix S is:")
         print(self.S, "\n")
-        print("The kinetic matrix is:\n")
+        print("The kinetic matrix T is:")
         print(self.T, "\n")
-        print("The potential matrix is:\n")
+        print("The potential matrix V is:")
         print(self.V, "\n")
-        print("The density matrix is:\n")
+        print("The orbital coefficients matrix C is:")
+        print(self.C, "\n")
+        print("The density matrix P is:")
         print(self.density_matrix, "\n")
         
