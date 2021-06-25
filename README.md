@@ -19,7 +19,7 @@ python setup.py install
  ## Examples 
  
 ```shell
-python main.py --xyz_file data/xyz/HeH.xyz --basis_name STO-3G --number_electrons 3
+python main.py --xyz_file data/xyz/HeH.xyz --basis_name STO-3G --number_electrons 2
 ```
 
 ## License
