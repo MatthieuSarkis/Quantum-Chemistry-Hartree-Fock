@@ -88,7 +88,7 @@ class PrimitiveGaussian():
         return (-2 * math.pi * Z / g.alpha) * g.normalization * boys(g.alpha * euclidean_distance_squared(g.center, R))
     
     @staticmethod
-    def multi(g1: 'PrimitiveGaussian',
+    def coulomb_repulsion(g1: 'PrimitiveGaussian',
               g2: 'PrimitiveGaussian',
               g3: 'PrimitiveGaussian',
               g4: 'PrimitiveGaussian',

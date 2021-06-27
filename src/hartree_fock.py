@@ -80,7 +80,7 @@ class HartreeFock():
                                                         c = (idx_c + 1) * (idxo_c + 1) - 1
                                                         d = (idx_d + 1) * (idxo_d + 1) - 1
                                                         
-                                                        self.coulomb_exchange[a, b, c, d] += gaussian_a.weight * gaussian_b.weight * gaussian_c.weight * gaussian_d.weight *  PrimitiveGaussian.multi(gaussian_a, gaussian_b, gaussian_c, gaussian_d)
+                                                        self.coulomb_exchange[a, b, c, d] += gaussian_a.weight * gaussian_b.weight * gaussian_c.weight * gaussian_d.weight *  PrimitiveGaussian.coulomb_repulsion(gaussian_a, gaussian_b, gaussian_c, gaussian_d)
                                                         
         self.H_core = self.T + self.V
         self.hamiltonian_computed = True
