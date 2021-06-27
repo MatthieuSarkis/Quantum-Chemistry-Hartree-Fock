@@ -15,6 +15,7 @@ import numpy as np
 from scipy.special import erf
 from typing import List, Tuple
 
+
 def xyz_to_molecule(file_path: str) -> Tuple[List[str], List[List[float]]]:
     
     atoms_list = []
@@ -37,12 +38,14 @@ def xyz_to_molecule(file_path: str) -> Tuple[List[str], List[List[float]]]:
 
     return atoms_list, coordinates
 
+
 def euclidean_distance_squared(R1: np.array,
                                R2: np.array,
                                ) -> float:
     
     return np.linalg.norm(np.array(R1) - np.array(R2))**2
-    
+ 
+   
 def frobenius_norm(A: np.array) -> float:
     
     N = A.shape[0]
@@ -53,6 +56,13 @@ def frobenius_norm(A: np.array) -> float:
             norm_squared += A[i, j]**2 
         
     return np.sqrt(norm_squared)
+
+
+def double_factorial(n: int) -> int:
+    
+    from functools import reduce
+    return reduce(int.__mul__, range(n, 0, -2))
+
 
 def boys(x: float) -> float:
     

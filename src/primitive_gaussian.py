@@ -13,17 +13,17 @@
 import math
 import numpy as np
 from typing import List
-from src.utilities import boys, euclidean_distance_squared 
+from src.utilities import boys, double_factorial, euclidean_distance_squared
 
 class PrimitiveGaussian():
     """
-    weight * normalization * \exp(- \alpha |r - center|^2)
+    weight * normalization * (x-center_x)^lx * (y-center_y)^ly * (z-center_z)^lz * \exp(- \alpha |r - center|^2)
     """
     
     def __init__(self,
                  center: List[float],
                  alpha: float,
-                 weight: float,
+                 weight: float, 
                  zeta_weight: float = 1.0,
                  normalization: float = None,
                  ) -> None:
@@ -33,7 +33,7 @@ class PrimitiveGaussian():
         self.weight = weight
         
         if normalization is None:
-            self.normalization = (2.0 * self.alpha / np.pi)**0.75 
+            self.normalization = (2.0 * self.alpha / np.pi)**(3/4)
         else:
             self.normalization = normalization
         
@@ -63,7 +63,7 @@ class PrimitiveGaussian():
         
         g = g1 * g2
         prefactor = (np.pi / g.alpha)**(3/2)
-        
+
         return prefactor * g.normalization
     
     @staticmethod
@@ -71,7 +71,7 @@ class PrimitiveGaussian():
                 g2: 'PrimitiveGaussian') -> float:
         
         g = g1 * g2
-        prefactor = (np.pi / g.alpha)**1.5
+        prefactor = (np.pi / g.alpha)**(3/2)
         reduced_exponent = g1.alpha * g2.alpha / g.alpha
 
         return g.normalization * prefactor * reduced_exponent * (3 - 2 * reduced_exponent * euclidean_distance_squared(g1.center, g2.center))
